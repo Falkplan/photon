@@ -3,11 +3,14 @@ package de.komoot.photon.importer.model;
 import com.neovisionaries.i18n.CountryCode;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
+import java.util.Arrays;
 import lombok.Data;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * denormalized doc with all information needed be dumped to elasticsearch
@@ -32,6 +35,7 @@ public class PhotonDoc {
 	final private Point centroid;
 	final private long linkedPlaceId; // 0 if unset
 	final private int rankSearch;
+        final private int admin_level;
 
 	private Map<String, String> street;
 	private Map<String, String> city;
@@ -43,10 +47,23 @@ public class PhotonDoc {
          */
         public static PhotonDoc create(long placeId, String osmType, long osmId, Map<String, String> nameMap) {
             return new PhotonDoc(placeId, osmType, osmId, "", "", nameMap,
-            		"", null, null, 0, 0, null, null, 0, 0);
+            		"", null, null, 0, 0, null, null, 0, 0, 0);
         }
 
-	public boolean isUsefulForIndex() {
+	public boolean isUsefulForIndex(JSONObject tagWhitelist) {                
+                if(tagWhitelist != null) {
+                        if(!tagWhitelist.keySet().contains(tagKey)) return false;
+
+                        JSONArray values = tagWhitelist.optJSONArray(tagKey);
+                        boolean foundMatch = false;
+                        for(int i=0; i<values.length(); i++) {
+                                String value = values.getString(i);
+                                foundMatch = value.equalsIgnoreCase(tagValue);
+                                if(foundMatch) break;
+                        }
+                        if(!foundMatch) return false;
+                }
+            
 		if("place".equals(tagKey) && "houses".equals(tagValue)) return false;
 
 		if(houseNumber != null) return true;
