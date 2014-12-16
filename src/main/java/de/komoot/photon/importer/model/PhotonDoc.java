@@ -62,7 +62,12 @@ public class PhotonDoc {
                                 if(foundMatch) break;
                         }
                         if(!foundMatch) return false;
-                }
+                }                
+                
+                // Falk specific accepted tags                
+                // Filter boundaries that are not admin_level 8
+                if("boundary".equals(tagKey) && tagValue.equals("administrative") && (admin_level > 8 || admin_level < 0)) return false;
+                // End Falk specific accepted tags
             
 		if("place".equals(tagKey) && "houses".equals(tagValue)) return false;
 
