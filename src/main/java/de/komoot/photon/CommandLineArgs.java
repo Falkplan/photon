@@ -1,4 +1,4 @@
-package de.komoot.photon.importer;
+package de.komoot.photon;
 
 /**
  * Command Line Arguments parsed by {@link com.beust.jcommander.JCommander} and used to start photon.
@@ -13,18 +13,18 @@ import java.io.File;
 public class CommandLineArgs {
 	@Parameter(names = "-cluster", description = "name of elasticsearch cluster to put the server into (default: photon)")
 	private String cluster = "photon";
-	
+
 	@Parameter(names = "-nominatim-import", description = "import nominatim database into photon (this will delete previous index)")
 	private boolean nominatimImport = false;
-        
-        @Parameter(names = "-languages", description = "languages nominatim importer should import and use at run-time, comma seperated (default: 'en,fr,de,it')")
+
+	@Parameter(names = "-languages", description = "languages nominatim importer should import and use at run-time, comma separated (default: 'en,fr,de,it')")
 	private String languages = "en,fr,de,it";
 
 	@Parameter(names = "-json", description = "import nominatim database and dump it to a json like files in (useful for developing)")
 	private String jsonDump = null;
 
-	@Parameter(names = "-delete-index", description = "delete index and all documents, creates a new and empty photon index")
-	private boolean deleteIndex = false;
+	@Parameter(names = "-recreate-index", description = "delete index and all documents, creates a new and empty photon index")
+	private boolean recreateIndex = false;
 
 	@Parameter(names = "-host", description = "postgres host (default 127.0.0.1)")
 	private String host = "127.0.0.1";

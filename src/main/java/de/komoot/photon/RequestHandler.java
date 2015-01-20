@@ -1,15 +1,15 @@
-package de.komoot.photon.importer;
+package de.komoot.photon;
 
 import com.google.common.base.Joiner;
-import de.komoot.photon.importer.elasticsearch.Searcher;
-import java.util.Arrays;
-import java.util.HashSet;
+import de.komoot.photon.elasticsearch.Searcher;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -22,10 +22,10 @@ public class RequestHandler extends Route {
 	private final Searcher searcher;
 	private final Set<String> supportedLanguages;
 
-        protected RequestHandler(String path, Searcher searcher, String languages) {
+	protected RequestHandler(String path, Searcher searcher, String languages) {
 		super(path);
 		this.searcher = searcher;
-                this.supportedLanguages = new HashSet<String>(Arrays.asList(languages.split(",")));
+		this.supportedLanguages = new HashSet<String>(Arrays.asList(languages.split(",")));
 	}
 
 	@Override
@@ -57,10 +57,11 @@ public class RequestHandler extends Route {
                 }
 
 		// parse limit for search results
-		int limit = 15;
+		int limit;
 		try {
 			limit = Math.min(50, Integer.parseInt(request.queryParams("limit")));
 		} catch(Exception e) {
+			limit = 15;
 		}
 
 		List<JSONObject> results;

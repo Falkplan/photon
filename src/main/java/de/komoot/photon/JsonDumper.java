@@ -1,8 +1,5 @@
-package de.komoot.photon.importer.json;
+package de.komoot.photon;
 
-import de.komoot.photon.importer.Importer;
-import de.komoot.photon.importer.Utils;
-import de.komoot.photon.importer.model.PhotonDoc;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileNotFoundException;
@@ -17,18 +14,18 @@ import java.io.PrintWriter;
 @Slf4j
 public class JsonDumper implements Importer {
 	private PrintWriter writer = null;
-        private final String[] languages;
+	private final String[] languages;
 
 	public JsonDumper(String filename, String languages) throws FileNotFoundException {
 		this.writer = new PrintWriter(filename);
-                this.languages = languages.split(",");
+		this.languages = languages.split(",");
 	}
 
 	@Override
 	public void add(PhotonDoc doc) {
 		try {
 			writer.println("{\"index\": {}}");
-			writer.println(Utils.convert(doc,this.languages).string());
+			writer.println(Utils.convert(doc, this.languages).string());
 		} catch(IOException e) {
 			log.error("error writing json file", e);
 		}
