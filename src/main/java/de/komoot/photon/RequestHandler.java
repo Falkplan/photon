@@ -29,11 +29,12 @@ public class RequestHandler extends Route {
 	}
 
 	@Override
-	public String handle(Request request, Response response) {
+	public String handle(Request request, Response response) {             
 		// parse query term
+                String reverse = request.queryParams("reverse");   
 		String query = request.queryParams("q");
-		if(query == null) {
-			halt(400, "missing search term 'q': /?q=berlin");
+		if(query == null && reverse == null) {
+			halt(400, "missing search term 'q': /?q=berlin or 'reverse': /?reverse=true");
 		}
 
 		// parse preferred language
@@ -50,6 +51,10 @@ public class RequestHandler extends Route {
 			lat = Double.valueOf(request.queryParams("lat"));
 		} catch(Exception nfe) {
 		}
+                
+                if (reverse != null && reverse.equalsIgnoreCase("true") && (lat == null || lon == null)) {
+                        halt(400, "missing search term 'lat' and/or 'lon': /?reverse=true&lat=51.5&lon=8.0");
+                }
 
 		// parse limit for search results
 		int limit;
@@ -59,7 +64,13 @@ public class RequestHandler extends Route {
 			limit = 15;
 		}
 
-		List<JSONObject> results = searcher.search(query, lang, lon, lat, limit, true);
+		List<JSONObject> results;
+                if (reverse != null && reverse.equalsIgnoreCase("true")) {
+                        results = searcher.reverse(lang, lon, lat);
+                } else {
+                        results = searcher.search(query, lang, lon, lat, limit, true);
+                }
+                
 		if(results.isEmpty()) {
 			// try again, but less restrictive
 			results = searcher.search(query, lang, lon, lat, limit, false);
