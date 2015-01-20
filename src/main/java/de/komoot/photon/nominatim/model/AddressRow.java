@@ -1,9 +1,12 @@
-package de.komoot.photon.importer.nominatim.model;
+package de.komoot.photon.nominatim.model;
 
+import com.google.common.base.Objects;
 import lombok.Data;
 
 import java.util.Arrays;
 import java.util.Map;
+
+import static de.komoot.photon.Constants.STATE;
 
 /**
  * representation of an address as returned by nominatim's get_addressdata PL/pgSQL function
@@ -19,9 +22,10 @@ public class AddressRow {
 	final private int rankAddress;
 	final Integer adminLevel;
 	final private String postcode;
+	final private String place;
 
-	static final String[] CITY_PLACE_VALUES = new String[]{"city", "hamlet", "town", "village"}; // must be in alphabetic order to speed up lookup
-	static final String[] USEFUL_CONTEXT_KEYS = new String[]{"boundary", "landuse", "place"}; // must be in alphabetic order to speed up lookup
+	static private final String[] CITY_PLACE_VALUES = new String[]{"city", "hamlet", "town", "village"}; // must be in alphabetic order to speed up lookup
+	static private final String[] USEFUL_CONTEXT_KEYS = new String[]{"boundary", "landuse", "place"}; // must be in alphabetic order to speed up lookup
 
 	public boolean isStreet() {
 		return 26 <= rankAddress && rankAddress < 28;
@@ -29,6 +33,10 @@ public class AddressRow {
 
 	public boolean isCity() {
 		if("place".equals(osmKey) && Arrays.binarySearch(CITY_PLACE_VALUES, osmValue) >= 0) {
+			return true;
+		}
+
+		if(place != null && Arrays.binarySearch(CITY_PLACE_VALUES, place) >= 0) {
 			return true;
 		}
 
@@ -50,11 +58,15 @@ public class AddressRow {
 
 		return false;
 	}
-	
+
 	public boolean hasPostcode() {
 		return postcode != null; // TODO really null?
 	}
-	
+
+	public boolean hasPlace() {
+		return place != null;
+	}
+
 	public boolean isUsefulForContext() {
 		if(name.isEmpty()) {
 			return false;
@@ -86,5 +98,27 @@ public class AddressRow {
 		}
 
 		return false;
+	}
+
+	public boolean isState() {
+		if("place".equals(osmKey) && STATE.equals(osmValue)) {
+			return true;
+		}
+
+		if(adminLevel != null && adminLevel == 4 && "boundary".equals(osmKey) && "administrative".equals(osmValue)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("placeId", placeId)
+				.add("name", name)
+				.add("osmKey", osmKey)
+				.add("osmValue", osmValue)
+				.toString();
 	}
 }

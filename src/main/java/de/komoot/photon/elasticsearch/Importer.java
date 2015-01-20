@@ -1,7 +1,7 @@
-package de.komoot.photon.importer.elasticsearch;
+package de.komoot.photon.elasticsearch;
 
-import de.komoot.photon.importer.Utils;
-import de.komoot.photon.importer.model.PhotonDoc;
+import de.komoot.photon.Utils;
+import de.komoot.photon.PhotonDoc;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -16,19 +16,19 @@ import java.io.IOException;
  * @author felix
  */
 @Slf4j
-public class Importer implements de.komoot.photon.importer.Importer {
+public class Importer implements de.komoot.photon.Importer {
 	private int documentCount = 0;
 
 	private final String indexName = "photon";
 	private final String indexType = "place";
 	private final Client esClient;
 	private BulkRequestBuilder bulkRequest;
-        private final String[] languages;
+	private final String[] languages;
 
 	public Importer(Client esClient, String languages) {
 		this.esClient = esClient;
 		this.bulkRequest = esClient.prepareBulk();
-                this.languages = languages.split(",");
+		this.languages = languages.split(",");
 	}
 
 	@Override

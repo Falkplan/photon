@@ -1,10 +1,9 @@
-package de.komoot.photon.importer;
+package de.komoot.photon;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.vividsolutions.jts.geom.Envelope;
-import de.komoot.photon.importer.model.PhotonDoc;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
@@ -20,15 +19,15 @@ import java.util.Set;
  * @author christoph
  */
 public class Utils {
-	static final Joiner commaJoiner = Joiner.on(", ").skipNulls();
+	private static final Joiner commaJoiner = Joiner.on(", ").skipNulls();
 
 	public static XContentBuilder convert(PhotonDoc doc, String[] languages) throws IOException {
 		XContentBuilder builder = XContentFactory.jsonBuilder().startObject()
-				.field(Tags.KEY_OSM_ID, doc.getOsmId())
-				.field(Tags.KEY_OSM_TYPE, doc.getOsmType())
-				.field(Tags.KEY_OSM_KEY, doc.getTagKey())
-				.field(Tags.KEY_OSM_VALUE, doc.getTagValue())
-				.field(Tags.KEY_IMPORTANCE, doc.getImportance());
+				.field(Constants.OSM_ID, doc.getOsmId())
+				.field(Constants.OSM_TYPE, doc.getOsmType())
+				.field(Constants.OSM_KEY, doc.getTagKey())
+				.field(Constants.OSM_VALUE, doc.getTagValue())
+				.field(Constants.IMPORTANCE, doc.getImportance());
 
 		if(doc.getCentroid() != null) {
 			builder.startObject("coordinate")
@@ -48,6 +47,7 @@ public class Utils {
 		writeName(builder, doc.getName(), languages);
 		writeIntlNames(builder, doc.getCity(), "city", languages);
 		writeIntlNames(builder, doc.getCountry(), "country", languages);
+		writeIntlNames(builder, doc.getState(), "state", languages);
 		writeIntlNames(builder, doc.getStreet(), "street", languages);
 		writeContext(builder, doc.getContext(), languages);
 		writeExtent(builder, doc.getBbox());
@@ -86,6 +86,9 @@ public class Utils {
 
 		if(name.get("old_name") != null)
 			fNames.put("old", name.get("old_name"));
+
+		if(name.get("reg_name") != null)
+			fNames.put("reg", name.get("reg_name"));
 
 		write(builder, fNames, "name");
 	}
@@ -151,18 +154,18 @@ public class Utils {
 
 		return filteredNames;
 	}
-        
-        // http://stackoverflow.com/a/4031040/1437096
-        public static String stripNonDigits(
-                final CharSequence input /* inspired by seh's comment */){
-                final StringBuilder sb = new StringBuilder(
-                        input.length() /* also inspired by seh's comment */);
-                for(int i = 0; i < input.length(); i++){
-                        final char c = input.charAt(i);
-                        if(c > 47 && c < 58){
-                                sb.append(c);
-                        }
-                }
-                return sb.toString();
-        }
+
+	// http://stackoverflow.com/a/4031040/1437096
+	public static String stripNonDigits(
+			final CharSequence input /* inspired by seh's comment */) {
+		final StringBuilder sb = new StringBuilder(
+				input.length() /* also inspired by seh's comment */);
+		for(int i = 0; i < input.length(); i++) {
+			final char c = input.charAt(i);
+			if(c > 47 && c < 58) {
+				sb.append(c);
+			}
+		}
+		return sb.toString();
+	}
 }
