@@ -40,7 +40,7 @@ public class RemoveStreetDuplicatesTest extends ESBaseTester {
 		final PhotonDoc doc = new PhotonDoc(id, "way", id, "highway", "primary", ImmutableMap.of("name", name),
 				null, null, null, 0, 0.5, null,
 				FACTORY.createPoint(new Coordinate(10., 47.)),
-				0, 0);
+				0, 0, 0);
 		doc.setPostcode(postcode);
 		return doc;
 	}

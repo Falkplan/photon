@@ -7,6 +7,9 @@ import com.vividsolutions.jts.geom.Point;
 import de.komoot.photon.Importer;
 import de.komoot.photon.PhotonDoc;
 import de.komoot.photon.nominatim.model.AddressRow;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.postgis.jts.JtsWrapper;
@@ -70,14 +73,15 @@ public class NominatimConnector {
 					CountryCode.getByCode(rs.getString("calculated_country_code")),
 					(Point) DBUtils.extractGeometry(rs, "centroid"),
 					rs.getLong("linked_place_id"),
-					rs.getInt("rank_search")
+					rs.getInt("rank_search"),
+                                        rs.getInt("admin_level")
 			);
 			doc.setPostcode(rs.getString("postcode"));
 			doc.setCountry(getCountryNames(rs.getString("calculated_country_code")));
 			return doc;
 		}
 	};
-	private final String selectColsPlaceX = "place_id, osm_type, osm_id, class, type, name, housenumber, postcode, extratags, ST_Envelope(geometry) AS bbox, parent_place_id, linked_place_id, rank_search, importance, calculated_country_code, centroid";
+	private final String selectColsPlaceX = "place_id, osm_type, osm_id, class, type, name, housenumber, postcode, extratags, ST_Envelope(geometry) AS bbox, parent_place_id, linked_place_id, rank_search, importance, calculated_country_code, centroid, admin_level";
 	private Importer importer;
 
 	private Map<String, String> getCountryNames(String countrycode) {
@@ -151,7 +155,7 @@ public class NominatimConnector {
 		});
 	}
 
-	private static final PhotonDoc FINAL_DOCUMENT = new PhotonDoc(0, null, 0, null, null, null, null, null, null, 0, 0, null, null, 0, 0);
+	private static final PhotonDoc FINAL_DOCUMENT = new PhotonDoc(0, null, 0, null, null, null, null, null, null, 0, 0, null, null, 0, 0, 0);
 
 	private class ImportThread implements Runnable {
 		private final BlockingQueue<PhotonDoc> documents;
@@ -214,7 +218,7 @@ public class NominatimConnector {
 
 				PhotonDoc doc = placeRowMapper.mapRow(rs, 0);
 
-				if(!doc.isUsefulForIndex()) return; // do not import document
+				if(!doc.isUsefulForIndex(tagWhitelistObject)) return; // do not import document
 
 				// finalize document by taking into account the higher level placex rows assigned to this row
 				completePlace(doc);

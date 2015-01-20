@@ -21,7 +21,7 @@ public class DocCompositionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connector = new NominatimConnector("localhost", 10044, "nominatim", "christoph", "christoph");
+		connector = new NominatimConnector("localhost", 10044, "nominatim", "christoph", "christoph", "");
 	}
 
 	@Test

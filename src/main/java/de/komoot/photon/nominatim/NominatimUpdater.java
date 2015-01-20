@@ -3,6 +3,9 @@ package de.komoot.photon.nominatim;
 import de.komoot.photon.PhotonDoc;
 import de.komoot.photon.Updater;
 import de.komoot.photon.nominatim.model.UpdateRow;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.postgis.jts.JtsWrapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -28,6 +31,8 @@ public class NominatimUpdater {
 	private final Integer maxRank = 30;
 	private final JdbcTemplate template;
 	private final NominatimConnector exporter;
+        private final String tagWhitelistPath;
+        private JSONObject tagWhitelistObject;
 
 	private Updater updater;
 
