@@ -168,6 +168,14 @@ public class Searcher {
 				final List<Double> se = coords.get(1);
 				properties.put("extent", new JSONArray(Lists.newArrayList(nw.get(0), nw.get(1), se.get(0), se.get(1))));
 			}
+                        
+                        // Falk specific display name
+                        String displayName = properties.optString("name") + ", " + 
+                                properties.optString("postcode") + " " + 
+                                properties.optString("city") + ", " + 
+                                properties.optString("state") + ", " +
+                                properties.optString("country");
+                        properties.put("display_name", displayName);
 
 			feature.put(Constants.PROPERTIES, properties);
 
