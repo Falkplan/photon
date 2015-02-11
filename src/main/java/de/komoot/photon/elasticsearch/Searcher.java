@@ -170,11 +170,23 @@ public class Searcher {
 			}
                         
                         // Falk specific display name
-                        String displayName = properties.optString("name") + ", " + 
-                                properties.optString("postcode") + " " + 
-                                properties.optString("city") + ", " + 
-                                properties.optString("state") + ", " +
-                                properties.optString("country");
+                        String displayName = "";
+                        if (!properties.optString("name").equals("")) {
+                            displayName += properties.optString("name");
+                        }
+                        if (!properties.optString("postcode").equals("") && !properties.optString("postcode").contains(";")) {
+                            displayName += ", " + properties.optString("postcode");
+                        }
+                        if (!properties.optString("city").equals("")) {
+                            displayName += ", " + properties.optString("city");
+                        }
+                        if (!properties.optString("state").equals("")) {
+                            displayName += ", " + properties.optString("state");
+                        }
+                        if (!properties.optString("country").equals("")) {
+                            displayName += ", " + properties.optString("country");
+                        }
+                        
                         properties.put("display_name", displayName);
 
 			feature.put(Constants.PROPERTIES, properties);
