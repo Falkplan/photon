@@ -71,7 +71,7 @@ public class RequestHandler extends Route {
                         results = searcher.search(query, lang, lon, lat, limit, true);
                 }
                 
-		if(results.isEmpty()) {
+		if(results.isEmpty() && (reverse == null || !reverse.equalsIgnoreCase("true"))) {
 			// try again, but less restrictive
 			results = searcher.search(query, lang, lon, lat, limit, false);
 		}
