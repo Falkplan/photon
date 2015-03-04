@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import de.komoot.photon.Constants;
 import de.komoot.photon.Utils;
+import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -20,6 +21,7 @@ import org.json.JSONObject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -170,23 +172,26 @@ public class Searcher {
 			}
                         
                         // Falk specific display name
-                        String displayName = "";
+                        ArrayList<String> displayNameArray = new ArrayList<String>();
                         if (!properties.optString("name").equals("")) {
-                            displayName += properties.optString("name");
+                            displayNameArray.add(properties.optString("name"));
                         }
                         if (!properties.optString("postcode").equals("") && !properties.optString("postcode").contains(";")) {
-                            displayName += ", " + properties.optString("postcode");
+                            displayNameArray.add(properties.optString("postcode"));
                         }
                         if (!properties.optString("city").equals("")) {
-                            displayName += ", " + properties.optString("city");
+                            displayNameArray.add(properties.optString("city"));
                         }
                         if (!properties.optString("state").equals("")) {
-                            displayName += ", " + properties.optString("state");
+                            displayNameArray.add(properties.optString("state"));
                         }
                         if (!properties.optString("country").equals("")) {
-                            displayName += ", " + properties.optString("country");
+                            displayNameArray.add(properties.optString("country"));
                         }
                         
+                        String displayName = StringUtils.join(displayNameArray.toArray(),", ");
+                        
+                        if (displayName == null) displayName = "";
                         properties.put("display_name", displayName);
 
 			feature.put(Constants.PROPERTIES, properties);
