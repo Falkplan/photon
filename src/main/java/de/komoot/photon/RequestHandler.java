@@ -52,9 +52,9 @@ public class RequestHandler extends Route {
 		} catch(Exception nfe) {
 		}
                 
-                if (reverse != null && reverse.equalsIgnoreCase("true") && (lat == null || lon == null)) {
-                        halt(400, "missing search term 'lat' and/or 'lon': /?reverse=true&lat=51.5&lon=8.0");
-                }
+        if (reverse != null && reverse.equalsIgnoreCase("true") && (lat == null || lon == null)) {
+                halt(400, "missing search term 'lat' and/or 'lon': /?reverse=true&lat=51.5&lon=8.0");
+        }
 
 		// parse limit for search results
 		int limit;
@@ -64,18 +64,20 @@ public class RequestHandler extends Route {
 			limit = 15;
 		}
 
-		List<JSONObject> results;
-                if (reverse != null && reverse.equalsIgnoreCase("true")) {
-                        results = searcher.reverse(lang, lon, lat);
-                } else {
-                        results = searcher.search(query, lang, lon, lat, limit, true);
-                }
-                
+        String osmKey = request.queryParams("osm_key");
+        String osmValue = request.queryParams("osm_value");
+        List<JSONObject> results;
+        if (reverse != null && reverse.equalsIgnoreCase("true")) {
+                results = searcher.reverse(lang, lon, lat);
+        } else {
+                results = searcher.search(query, lang, lon, lat, osmKey,osmValue,limit, true);
+        }
+        
 		if(results.isEmpty() && (reverse == null || !reverse.equalsIgnoreCase("true"))) {
-			// try again, but less restrictive
-			results = searcher.search(query, lang, lon, lat, limit, false);
-		}
-
+                // try again, but less restrictive
+                results = searcher.search(query, lang, lon, lat, osmKey,osmValue,limit, false);
+        }
+        
 		// build geojson
 		final JSONObject collection = new JSONObject();
 		collection.put("type", "FeatureCollection");

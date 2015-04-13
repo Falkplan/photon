@@ -68,26 +68,37 @@
       }
     },
     "filter": {
-      "or": {
+      "and": {
         "filters": [
           {
-            "missing": {
-              "field": "housenumber"
-            }
-          },
-          {
-            "query": {
-              "match": {
-                "housenumber": {
-                  "query": "${query}",
-                  "analyzer": "standard"
+            "or": {
+              "filters": [
+                {
+                  "missing": {
+                    "field": "housenumber"
+                  }
+                },
+                {
+                  "query": {
+                    "match": {
+                      "housenumber": {
+                        "query": "${query}",
+                        "analyzer": "standard"
+                      }
+                    }
+                  }
+                },
+                {
+                  "exists": {
+                    "field": "name.${lang}.raw"
+                  }
                 }
-              }
+              ]
             }
           },
           {
-            "exists": {
-              "field": "name.${lang}.raw"
+            "term": {
+              "osm_key": "${osm_key}"
             }
           }
         ]

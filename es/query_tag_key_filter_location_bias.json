@@ -61,37 +61,55 @@
           {
             "script_score": {
               "script": "general-score",
-              "lang": "groovy"
+              "lang" : "groovy"
+            }
+          },
+          {
+            "script_score": {
+              "script": "location-biased-score",
+              "params": {
+                "lat": ${lat},
+                "lon": ${lon}
+              },
+              "lang" : "groovy"
             }
           }
         ]
       }
     },
     "filter": {
-      "or": {
-        "filters": [
-          {
-            "missing": {
-              "field": "housenumber"
-            }
-          },
-          {
-            "query": {
-              "match": {
-                "housenumber": {
-                  "query": "${query}",
-                  "analyzer": "standard"
+      "and":{
+        "filters":[
+          {"term":{"osm_key":"${osm_key}"}},
+          {"or": {
+            "filters": [
+              {
+                "missing": {
+                  "field": "housenumber"
+                }
+              },
+              {
+                "query": {
+                  "match": {
+                    "housenumber": {
+                      "query": "${query}",
+                      "analyzer": "standard"
+                    }
+                  }
+                }
+              },
+              {
+                "exists": {
+                  "field": "name.${lang}.raw"
                 }
               }
-            }
-          },
-          {
-            "exists": {
-              "field": "name.${lang}.raw"
-            }
-          }
+            ]
+          }}
+          
         ]
+        
       }
+      
     }
   }
 }
