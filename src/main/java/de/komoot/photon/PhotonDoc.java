@@ -36,7 +36,7 @@ public class PhotonDoc {
 	final private Point centroid;
 	final private long linkedPlaceId; // 0 if unset
 	final private int rankSearch;
-        final private int admin_level;
+        final private int adminLevel;
 
 	private Map<String, String> street;
 	private Map<String, String> city;
@@ -44,7 +44,7 @@ public class PhotonDoc {
 	private Map<String, String> country;
 	private Map<String, String> state;
 
-	public PhotonDoc(long placeId, String osmType, long osmId, String tagKey, String tagValue, Map<String, String> name, String houseNumber, Map<String, String> extratags, Envelope bbox, long parentPlaceId, double importance, CountryCode countryCode, Point centroid, long linkedPlaceId, int rankSearch) {
+	public PhotonDoc(long placeId, String osmType, long osmId, String tagKey, String tagValue, Map<String, String> name, String houseNumber, Map<String, String> extratags, Envelope bbox, long parentPlaceId, double importance, CountryCode countryCode, Point centroid, long linkedPlaceId, int rankSearch, int adminLevel) {
 		String place = extratags != null ? extratags.get("place") : null;
 		if(place != null) {
 			// take more specific extra tag information
@@ -67,6 +67,7 @@ public class PhotonDoc {
 		this.centroid = centroid;
 		this.linkedPlaceId = linkedPlaceId;
 		this.rankSearch = rankSearch;
+                this.adminLevel = adminLevel;
 	}
 
 	/**
@@ -92,8 +93,8 @@ public class PhotonDoc {
                 }                
                 
                 // Falk specific accepted tags                
-                // Filter boundaries that are not admin_level 8
-                if("boundary".equals(tagKey) && tagValue.equals("administrative") && (admin_level > 8 || admin_level < 0)) return false;
+                // Filter boundaries that are higher than admin_level 8
+                if("boundary".equals(tagKey) && tagValue.equals("administrative") && (adminLevel > 8 || adminLevel < 0)) return false;
                 // End Falk specific accepted tags
             
 		if("place".equals(tagKey) && "houses".equals(tagValue)) return false;
@@ -102,8 +103,6 @@ public class PhotonDoc {
 
 		if(name.isEmpty()) return false;
 
-		if(linkedPlaceId > 0) return false;
-
-		return true;
+		return linkedPlaceId <= 0;
 	}
 }
