@@ -136,7 +136,6 @@ public class Searcher {
                         .actionGet();
 		
                 List<JSONObject> results = convert(response.getHits().getHits(), lang);
-		results = removeStreetDuplicates(results, lang);
 		
                 if(results.size() > 1) {
 			results = results.subList(0, 1);
@@ -211,9 +210,12 @@ public class Searcher {
 			}
                         
                         // Falk specific display name
-                        ArrayList<String> displayNameArray = new ArrayList<String>();
+                        ArrayList<String> displayNameArray = new ArrayList<String>();                        
                         if (!properties.optString("name").equals("")) {
                             displayNameArray.add(properties.optString("name"));
+                        }
+                        if (!properties.optString("housenumber").equals("") && !properties.optString("street").equals("")) {
+                            displayNameArray.add(properties.optString("street") + " " + properties.optString("housenumber"));
                         }
                         if (!properties.optString("postcode").equals("") && !properties.optString("postcode").contains(";")) {
                             displayNameArray.add(properties.optString("postcode"));
@@ -226,7 +228,7 @@ public class Searcher {
                         }
                         if (!properties.optString("country").equals("")) {
                             displayNameArray.add(properties.optString("country"));
-                        }
+                        }                        
                         
                         String displayName = StringUtils.join(displayNameArray.toArray(),", ");
                         
