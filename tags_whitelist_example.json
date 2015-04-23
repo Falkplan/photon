@@ -18,7 +18,8 @@
       "state",
       "city_block",
       "borough",
-      "national_park"
+      "national_park",
+      "house"
     ],
     "highway": [
       "residential",
