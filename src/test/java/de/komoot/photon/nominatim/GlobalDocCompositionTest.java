@@ -23,7 +23,7 @@ public class GlobalDocCompositionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connector = new NominatimConnector("localhost", 10044, "nominatim", "christoph", "christoph");
+		connector = new NominatimConnector("localhost", 10044, "nominatim", "christoph", "christoph", null);
 	}
 
 	@Test

@@ -36,7 +36,7 @@ public class RegionalNameTest extends ESBaseTester {
 	}
 
 	private PhotonDoc createDoc(int id, String name, String regName) {
-		return new PhotonDoc(id, "way", id, "highway", "primary", ImmutableMap.of("name", name, "reg_name", regName), null, null, null, 0, 0.5, null, FACTORY.createPoint(new Coordinate(10., 47.)), 0, 0);
+		return new PhotonDoc(id, "way", id, "highway", "primary", ImmutableMap.of("name", name, "reg_name", regName), null, null, null, 0, 0.5, null, FACTORY.createPoint(new Coordinate(10., 47.)), 0, 0, 0);
 	}
 
 	@Test
