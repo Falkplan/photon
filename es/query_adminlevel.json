@@ -1,0 +1,122 @@
+{
+    "filtered": {
+        "query": {
+            "match_all": {}
+        },
+        "filter": {
+            "and": {
+                "filters": [
+                    {
+                        "and": [{
+                                "or":
+                                        [
+                                            {
+                                                "and": [
+                                                    {
+                                                        "term": {
+                                                            "osm_key": "boundary"
+                                                        }
+                                                    },
+                                                    {
+                                                        "term": {
+                                                            "osm_value": "administrative"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "and": [
+                                                    {
+                                                        "term": {
+                                                            "osm_key": "place"
+                                                        }
+                                                    },
+                                                    {
+                                                        "term": {
+                                                            "osm_value": "village"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "and": [
+                                                    {
+                                                        "term": {
+                                                            "osm_key": "place"
+                                                        }
+                                                    },
+                                                    {
+                                                        "term": {
+                                                            "osm_value": "city"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "and": [
+                                                    {
+                                                        "term": {
+                                                            "osm_key": "place"
+                                                        }
+                                                    },
+                                                    {
+                                                        "term": {
+                                                            "osm_value": "town"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "and": [
+                                                    {
+                                                        "term": {
+                                                            "osm_key": "place"
+                                                        }
+                                                    },
+                                                    {
+                                                        "term": {
+                                                            "osm_value": "hamlet"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "and": [
+                                                    {
+                                                        "term": {
+                                                            "osm_key": "place"
+                                                        }
+                                                    },
+                                                    {
+                                                        "term": {
+                                                            "osm_value": "locality"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+
+                                        ]
+                            },
+                            {
+                                "term": {
+                                    "admin_level": ${admin_level}
+                                }
+                            },
+                            {
+                                "term": {
+                                    "collector.${lang}.raw": "${country}"
+                                }
+                            },
+                            {
+                                "term": {
+                                    "osm_type": "R"
+                                }
+                            }]
+
+                    }
+
+                ]
+            }
+        }
+    }
+}

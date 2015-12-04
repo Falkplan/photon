@@ -3,6 +3,7 @@ package de.komoot.photon.elasticsearch;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.neovisionaries.i18n.CountryCode;
 import de.komoot.photon.Constants;
 import de.komoot.photon.Utils;
 import java.util.ArrayList;
@@ -39,11 +40,12 @@ public class Searcher {
 	private final String queryWithTagKeyValueFiltersTemplate;
 	private final String queryWithTagKeyValueFiltersAndBiasTemplate;
 	private final String queryWithTagKeyFiltersTemplate;
-	private final String queryWithTagKeyFiltersAndBiasTemplate;
+    private final String queryWithTagKeyFiltersAndBiasTemplate;
+    private final String queryAdminLevel;
 	private final Client client;
 
 	/** These properties are directly copied into the result */
-	private final static String[] KEYS_LANG_UNSPEC = {Constants.OSM_ID, Constants.OSM_VALUE, Constants.OSM_KEY, Constants.POSTCODE, Constants.HOUSENUMBER, Constants.OSM_TYPE};
+    private final static String[] KEYS_LANG_UNSPEC = {Constants.OSM_ID, Constants.OSM_VALUE, Constants.OSM_KEY, Constants.POSTCODE, Constants.HOUSENUMBER, Constants.OSM_TYPE, Constants.ADMIN_LEVEL};
 
 	/** These properties will be translated before they are copied into the result */
 	private final static String[] KEYS_LANG_SPEC = {Constants.NAME, Constants.COUNTRY, Constants.CITY, Constants.STREET, Constants.STATE};    
@@ -58,7 +60,8 @@ public class Searcher {
             queryWithTagKeyValueFiltersTemplate = IOUtils.toString(loader.getResourceAsStream("query_tag_key_value_filter.json"), "UTF-8");
             queryWithTagKeyValueFiltersAndBiasTemplate = IOUtils.toString(loader.getResourceAsStream("query_tag_key_value_filter_location_bias.json"), "UTF-8");
             queryWithTagKeyFiltersTemplate = IOUtils.toString(loader.getResourceAsStream("query_tag_key_filter.json"), "UTF-8");
-            queryWithTagKeyFiltersAndBiasTemplate = IOUtils.toString(loader.getResourceAsStream("query_tag_key_filter_location_bias.json"), "UTF-8");
+                    queryWithTagKeyFiltersAndBiasTemplate = IOUtils.toString(loader.getResourceAsStream("query_tag_key_filter_location_bias.json"), "UTF-8");
+                    queryAdminLevel = IOUtils.toString(loader.getResourceAsStream("query_adminlevel.json"), "UTF-8");
         } catch(Exception e) {
 			throw new RuntimeException("cannot access query templates", e);
 		}
@@ -141,7 +144,28 @@ public class Searcher {
 			results = results.subList(0, 1);
 		}
 		return results;
-	}
+    }
+
+    public List<JSONObject> adminlevel(String lang, Integer adminLevel, String country, Integer limit) {
+        final ImmutableMap.Builder<String, Object> params = ImmutableMap.<String, Object>builder()
+                .put("lang", lang)
+                .put("admin_level", adminLevel)
+                .put("country", country);
+
+        StrSubstitutor sub = new StrSubstitutor(params.build(), "${", "}");
+        String query = sub.replace(queryAdminLevel);
+
+        SearchResponse response = client.prepareSearch("photon").setSearchType(SearchType.QUERY_AND_FETCH)
+                .setQuery(query)
+                .setSize(limit)
+                .setTimeout(TimeValue.timeValueSeconds(7))
+                .execute()
+                .actionGet();
+
+        List<JSONObject> results = convert(response.getHits().getHits(), lang);
+
+        return results;
+    }
 
     private List<JSONObject> removeStreetDuplicates(List<JSONObject> results, String lang) {
 		List<JSONObject> filteredItems = Lists.newArrayListWithCapacity(results.size());

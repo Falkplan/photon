@@ -25,5 +25,6 @@ public class Constants {
 	public static final String OSM_ID = "osm_id";
 	public static final String OSM_TYPE = "osm_type";
 	public static final String OSM_KEY = "osm_key";
-	public static final String OSM_VALUE = "osm_value";
+    public static final String OSM_VALUE = "osm_value";
+    public static final String ADMIN_LEVEL = "admin_level";
 }

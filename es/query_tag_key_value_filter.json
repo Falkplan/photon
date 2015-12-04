@@ -77,8 +77,8 @@
             "term": {
               "osm_value": "${osm_value}"
             }
-          },
-          {
+                    },
+                    {
             "or": {
               "filters": [
                 {
