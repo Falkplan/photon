@@ -164,6 +164,10 @@ public class Searcher {
 
         List<JSONObject> results = convert(response.getHits().getHits(), lang);
 
+        if (results.size() > limit) {
+            results = results.subList(0, limit);
+        }
+
         return results;
     }
 
