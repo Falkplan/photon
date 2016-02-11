@@ -6,6 +6,7 @@ import de.komoot.photon.elasticsearch.Searcher;
 import de.komoot.photon.elasticsearch.Server;
 import de.komoot.photon.nominatim.NominatimConnector;
 import de.komoot.photon.nominatim.NominatimUpdater;
+import java.io.File;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.Client;
 import spark.Request;
@@ -14,6 +15,7 @@ import spark.Route;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 
 import static spark.Spark.*;
 
@@ -131,6 +133,10 @@ public class App {
 	private static void startApi(CommandLineArgs args, Client esNodeClient) {
 		setPort(args.getListenPort());
 		setIpAddress(args.getListenIp());
+                
+                if (args.isUseSsl() && args.getKeystoreFile() != null && args.getKeystorePassword() != null && args.getTruststoreFile() != null && args.getTruststorePassword() != null) {
+                    setSecure(args.getKeystoreFile(), args.getKeystorePassword(), args.getTruststoreFile(), args.getTruststorePassword());
+                }                
 
 		// setup search API
 		final Searcher searcher = new Searcher(esNodeClient);

@@ -58,5 +58,20 @@ public class CommandLineArgs {
 
 	@Parameter(names = "-h", description = "show help / usage")
 	private boolean usage = false;
+        
+        @Parameter(names = "-use-ssl", description = "use ssl certificate for requests (default false)")
+        private boolean useSsl = false;
+        
+        @Parameter(names = "-keystore-file", description = "keystore file path (-use-ssl should be on)")
+        private String keystoreFile = null;
+        
+        @Parameter(names = "-keystore-password", description = "keystore password (-use-ssl should be on)")
+        private String keystorePassword = null;
+        
+        @Parameter(names = "-truststore-file", description = "truststore file path (-use-ssl should be on)")
+        private String truststoreFile = null;
+        
+        @Parameter(names = "-truststore-password", description = "truststore password (-use-ssl should be on)")
+        private String truststorePassword = null;
 }
 
