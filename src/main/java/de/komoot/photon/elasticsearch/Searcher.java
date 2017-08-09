@@ -146,6 +146,7 @@ public class Searcher {
 		return results;
     }
 
+    // FALK SPECIFIC
     public List<JSONObject> adminlevel(String lang, Integer adminLevel, String country, Integer limit) {
         final ImmutableMap.Builder<String, Object> params = ImmutableMap.<String, Object>builder()
                 .put("lang", lang)
@@ -184,7 +185,10 @@ public class Searcher {
 					String name = properties.getString(Constants.NAME);
 					String key;
 
+                                        // FALK SPECIFIC
 					if(lang.equals("nl")) {
+                                                // As NL has different postcodes letters for the same street name, 
+                                                // the duplicate check should only take digits into account
 						String onlyDigitsPostcode = Utils.stripNonDigits(postcode);
 						key = onlyDigitsPostcode + ":" + name;
 					} else {
@@ -237,7 +241,7 @@ public class Searcher {
 				properties.put("extent", new JSONArray(Lists.newArrayList(nw.get(0), nw.get(1), se.get(0), se.get(1))));
 			}
                         
-                        // Falk specific display name
+                        // FALK SPECIFIC display name
                         ArrayList<String> displayNameArray = new ArrayList<String>();                        
                         if (!properties.optString("name").equals("")) {
                             displayNameArray.add(properties.optString("name"));
