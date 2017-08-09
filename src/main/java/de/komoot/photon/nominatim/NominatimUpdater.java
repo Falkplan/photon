@@ -65,6 +65,7 @@ public class NominatimUpdater {
 					template.update("update placex set indexed_status = 0 where place_id = ?", place.getPlaceId());
 					final PhotonDoc updatedDoc = exporter.getByPlaceId(place.getPlaceId());
 
+                                        // FALK SPECIFIC
 					switch(place.getIndexdStatus()) {
 						case 1:
 							if(updatedDoc.isUsefulForIndex(tagWhitelistObject))
