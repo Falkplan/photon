@@ -134,6 +134,7 @@ public class App {
 		setPort(args.getListenPort());
 		setIpAddress(args.getListenIp());
                 
+                // FALK SPECIFIC
                 if (args.isUseSsl() && args.getKeystoreFile() != null && args.getKeystorePassword() != null && args.getTruststoreFile() != null && args.getTruststorePassword() != null) {
                     setSecure(args.getKeystoreFile(), args.getKeystorePassword(), args.getTruststoreFile(), args.getTruststorePassword());
                 }                
